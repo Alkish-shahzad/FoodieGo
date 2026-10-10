@@ -1,0 +1,284 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FoodieGo | Fresh Food Delivered</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:Arial,sans-serif;background:#fffaf5;color:#222;line-height:1.6}
+header{background:#171717;color:#fff;padding:20px 8%;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:15px}
+.logo{font-size:28px;font-weight:bold;color:#f26722}
+nav{display:flex;gap:24px}
+nav a{color:#fff;text-decoration:none}
+nav a:hover{color:#f26722}
+.hero{padding:65px 8%;display:flex;align-items:center;justify-content:space-between;gap:35px;flex-wrap:wrap;background:#fff0e3}
+.hero-content{flex:1;min-width:260px}
+.hero h1{font-size:clamp(36px,5vw,58px);line-height:1.15;margin-bottom:20px}
+.hero h1 span{color:#f26722}
+.hero p{color:#555;margin-bottom:25px;max-width:520px}
+.hero img{width:min(100%,420px);height:310px;border-radius:18px;object-fit:cover}
+.btn{display:inline-block;background:#f26722;color:#fff;border:none;padding:12px 21px;border-radius:7px;cursor:pointer;font-size:15px;font-weight:bold;transition:background .2s}
+.btn:hover{background:#d95112}
+.btn:disabled{opacity:.6;cursor:not-allowed}
+.hero .btn{text-decoration:none}
+.section{padding:48px 8%}
+.section h2{font-size:30px;margin-bottom:22px}
+.search{width:100%;padding:14px;border:1px solid #ddd;border-radius:7px;margin-bottom:28px;font-size:16px}
+.foods{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:24px}
+.food-card{background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 4px 16px #00000012;padding-bottom:20px;transition:transform .2s}
+.food-card:hover{transform:translateY(-3px)}
+.food-card img{display:block;width:100%;height:180px;object-fit:cover;background:#eee}
+.food-card h3,.food-card p,.food-card .price{margin:12px 16px}
+.food-card p{color:#777}
+.food-card .price{color:#f26722;font-weight:bold;font-size:19px}
+.food-card button{margin-left:16px}
+.cart{background:#171717;color:#fff;padding:24px;border-radius:12px;margin-top:30px}
+.cart h2{margin-bottom:18px}
+.cart-item{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin:14px 0}
+.cart-item button{padding:4px 12px;margin-left:5px;cursor:pointer;border:0;border-radius:4px}
+#total{margin-top:20px;color:#ff9a64}
+.checkout{background:#fff;padding:24px;border-radius:12px;margin-top:24px;box-shadow:0 4px 16px #00000010}
+.checkout h2{margin-bottom:16px}
+.checkout label{display:block;margin:14px 0 7px;font-weight:bold}
+.checkout input,.checkout textarea{display:block;width:100%;padding:12px;border:1px solid #ddd;border-radius:7px;font:inherit}
+.checkout input:focus,.checkout textarea:focus,.search:focus{outline:2px solid #f26722;border-color:transparent}
+.checkout textarea{min-height:90px;resize:vertical}
+.checkout button{margin-top:18px}
+#order-message{margin-top:14px;overflow-wrap:anywhere}
+footer{text-align:center;background:#171717;color:#fff;padding:24px;margin-top:30px}
+@media(max-width:600px){
+header{padding:18px 20px}
+nav{gap:15px}
+.hero,.section{padding:32px 20px}
+.hero img{height:230px}
+.section h2{font-size:26px}
+}
+</style>
+</head>
+<body>
+<header>
+    <div class="logo">FoodieGo</div>
+    <nav>
+        <a href="#">Home</a>
+        <a href="#menu">Menu</a>
+        <a href="#cart">Cart (<span id="cart-count">0</span>)</a>
+    </nav>
+</header>
+
+<section class="hero">
+    <div class="hero-content">
+        <h1>Hungry? Get Your <span>Favourite Food!</span></h1>
+        <p>Fresh, delicious meals delivered to your table. Discover your next favourite dish with FoodieGo.</p>
+        <a class="btn" href="#menu">Explore Menu</a>
+    </div>
+    <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=900&q=80" alt="Freshly prepared pizza">
+</section>
+
+<section class="section" id="menu">
+    <h2>Our Popular Menu</h2>
+    <input class="search" id="search" type="text" placeholder="Search pizza, burger, biryani..." aria-label="Search food">
+    <div class="foods" id="foods"></div>
+
+    <div class="cart" id="cart">
+        <h2>Your Cart</h2>
+        <div id="cart-items">Your cart is empty.</div>
+        <h3 id="total">Total: Rs. 0</h3>
+    </div>
+
+    <div class="checkout" id="checkout">
+        <h2>Checkout</h2>
+        <form id="checkout-form">
+            <label for="customer-name">Full Name</label>
+            <input id="customer-name" name="customerName" type="text" maxlength="100" autocomplete="name" required placeholder="Enter your full name">
+
+            <label for="customer-phone">Phone Number</label>
+            <input id="customer-phone" name="customerPhone" type="tel" maxlength="25" autocomplete="tel" required placeholder="Enter your phone number">
+
+            <label for="delivery-address">Delivery Address</label>
+            <textarea id="delivery-address" name="deliveryAddress" maxlength="500" autocomplete="street-address" required placeholder="Enter your complete delivery address"></textarea>
+
+            <button class="btn" id="place-order" type="submit">Place Order</button>
+            <p id="order-message" role="status" aria-live="polite"></p>
+        </form>
+    </div>
+</section>
+
+<footer>
+    <p>© 2026 FoodieGo | Fresh food, delivered with care</p>
+</footer>
+
+<script>
+const menu = [
+    {
+        id: 1,
+        name: "Cheese Pizza",
+        price: 850,
+        description: "Cheesy, fresh and delicious",
+        image: "https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=600&q=80"
+    },
+    {
+        id: 2,
+        name: "Classic Burger",
+        price: 550,
+        description: "Juicy burger with fresh veggies",
+        image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=80"
+    },
+    {
+        id: 3,
+        name: "Chicken Biryani",
+        price: 450,
+        description: "Aromatic rice with tasty spices",
+        image: "https://images.unsplash.com/photo-1633945274405-b6c8069047b0?auto=format&fit=crop&w=600&q=80"
+    },
+    {
+        id: 4,
+        name: "French Fries",
+        price: 300,
+        description: "Golden and crispy fries",
+        image: "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?auto=format&fit=crop&w=600&q=80"
+    }
+];
+
+const cart = [];
+const foods = document.getElementById("foods");
+const search = document.getElementById("search");
+const checkoutForm = document.getElementById("checkout-form");
+const orderMessage = document.getElementById("order-message");
+const placeOrderButton = document.getElementById("place-order");
+
+function renderFoods(items) {
+    foods.innerHTML = items.map(food => `
+        <article class="food-card">
+            <img src="${food.image}" alt="${food.name}" loading="lazy"
+                 onerror="this.onerror=null;this.alt='Image unavailable';">
+            <h3>${food.name}</h3>
+            <p>${food.description}</p>
+            <div class="price">Rs. ${food.price}</div>
+            <button class="btn" type="button" onclick="addToCart(${food.id})">Add to Cart</button>
+        </article>
+    `).join("");
+}
+
+function addToCart(id) {
+    const food = menu.find(item => item.id === id);
+    if (!food) return;
+
+    const existing = cart.find(item => item.id === id);
+    if (existing) {
+        existing.quantity++;
+    } else {
+        cart.push({ ...food, quantity: 1 });
+    }
+
+    orderMessage.textContent = "";
+    renderCart();
+}
+
+function renderCart() {
+    const cartItems = document.getElementById("cart-items");
+    const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+    const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+    document.getElementById("cart-count").textContent = count;
+    document.getElementById("total").textContent = `Total: Rs. ${total}`;
+
+    if (cart.length === 0) {
+        cartItems.textContent = "Your cart is empty.";
+        return;
+    }
+
+    cartItems.innerHTML = cart.map(item => `
+        <div class="cart-item">
+            <span>${item.name} × ${item.quantity} — Rs. ${item.price * item.quantity}</span>
+            <span>
+                <button type="button" aria-label="Decrease ${item.name} quantity"
+                    onclick="changeQuantity(${item.id}, -1)">−</button>
+                <button type="button" aria-label="Increase ${item.name} quantity"
+                    onclick="changeQuantity(${item.id}, 1)">+</button>
+            </span>
+        </div>
+    `).join("");
+}
+
+function changeQuantity(id, change) {
+    const item = cart.find(item => item.id === id);
+    if (!item) return;
+
+    item.quantity += change;
+    if (item.quantity <= 0) {
+        cart.splice(cart.indexOf(item), 1);
+    }
+
+    orderMessage.textContent = "";
+    renderCart();
+}
+
+search.addEventListener("input", () => {
+    const query = search.value.toLowerCase().trim();
+    renderFoods(menu.filter(food => food.name.toLowerCase().includes(query)));
+});
+
+checkoutForm.addEventListener("submit", async function(event) {
+    event.preventDefault();
+
+    if (cart.length === 0) {
+        orderMessage.textContent = "Please add food to your cart before placing an order.";
+        return;
+    }
+
+    const customerName = document.getElementById("customer-name").value.trim();
+    const customerPhone = document.getElementById("customer-phone").value.trim();
+    const deliveryAddress = document.getElementById("delivery-address").value.trim();
+
+    if (!customerName || !customerPhone || !deliveryAddress) {
+        orderMessage.textContent = "Please fill in all customer details.";
+        return;
+    }
+
+    const orderData = {
+        customerName,
+        customerPhone,
+        deliveryAddress,
+        items: cart.map(item => ({
+            id: item.id,
+            quantity: item.quantity
+        }))
+    };
+
+    placeOrderButton.disabled = true;
+    orderMessage.textContent = "Placing your order...";
+
+    try {
+        const response = await fetch("/api/orders", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(orderData)
+        });
+
+        const result = await response.json();
+
+        if (!response.ok || !result.success) {
+            throw new Error(result.message || "Order could not be placed.");
+        }
+
+        orderMessage.textContent =
+            `Order placed successfully! Order ID: ${result.orderId}. Total: Rs. ${result.total}. Status: Pending.`;
+
+        cart.length = 0;
+        renderCart();
+        checkoutForm.reset();
+    } catch (error) {
+        orderMessage.textContent = error.message ||
+            "Unable to place order. Please check your connection and try again.";
+    } finally {
+        placeOrderButton.disabled = false;
+    }
+});
+
+renderFoods(menu);
+renderCart();
+</script>
+</body>
+</html>
